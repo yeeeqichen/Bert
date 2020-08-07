@@ -1,6 +1,7 @@
 from Config import config
 import csv
 import numpy
+import random
 import torch
 PAD, CLS = '[PAD]', '[CLS]'
 csv.field_size_limit(1000000)
@@ -54,11 +55,17 @@ class DataGenerator:
             dataset = self.train_dataset
         elif mode == 'valid':
             dataset = self.valid_dataset
+            random.shuffle(dataset)
+            begin = 0
+            end = config.batch_size
+            yield _to_tensor()
+            return
         elif mode == 'test':
             dataset = self.test_dataset
             begin = 0
             end = len(dataset)
-            return _to_tensor()
+            yield _to_tensor()
+            return
         else:
             raise Exception("please clarify mode!")
         for i in range(len(dataset) // config.batch_size):

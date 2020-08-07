@@ -19,23 +19,3 @@ class Model(torch.nn.Module):
         return out
 
 
-if __name__ == '__main__':
-    """
-    记录了模型的使用方法
-    一定要使用BertAdam！！！
-    """
-    model = Model()
-    import DataLoader
-    loader = DataLoader.DataGenerator()
-    param_optimizer = list(model.named_parameters())
-    no_decay = ['bias', 'LayerNorm.bias', 'LayerNorm.weight']
-    optimizer_grouped_parameters = [
-            {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay': 0.01},
-            {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}]
-    t_total = (len(loader.train_dataset) // config.batch_size) * config.EPOCH
-    optimizer = BertAdam(optimizer_grouped_parameters,
-                             lr=config.learning_rate,
-                             warmup=0.05,
-                             t_total=t_total)
-
-
